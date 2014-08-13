@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soma Template Example-7</title>    
+  <link rel="stylesheet" href="chui/chui-ios-3.6.3.css">
+  <script type='text/javascript' src='js/jquery-2.1.1.min.js'></script>
+  <script type='text/javascript' src='chui/chui-3.6.3.min.js'></script>
+  <script src="js/soma-template.js"></script>
+  <style>
+    .data-cloak {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class='current'>
+    <h1 id='mainTitle'>Template Linking</h1>
+  </nav>   
+  <article id='main' class='current'> 
+    <section> 
+      <h2>Available Friends</h2>
+      <!-- First template: list of friends -->
+      <ul class='list' id='myFriends'>
+        <li data-click='annouceFriend(friend)' data-repeat='friend in friends'>{{friend.first}} {{friend.last}}</li>
+      </ul>   
+
+      <h2>Chosen Friend</h2>
+      <!-- Second template: chosen friend -->
+      <ul class='list' id='chosenFriend'>
+        <li class='data-cloak'><h3>{{friend.first}} {{friend.last}}</h3></li>
+      </ul>   
+    </section>
+  </article>
+  <script>
+    (function() {
+      ///////////////////////////////////////
+      // Here's the array of items we'll use:
+      ///////////////////////////////////////
+      var FriendsModel = [
+        {
+          "first": "John",
+          "last": "Doe",
+          "age": 21
+        },
+        {
+          "first": "Joe",
+          "last": "Bodoni",
+          "age": 35
+        },
+        {
+          "first": "Suzy",
+          "last": "Cue",
+          "age": 20
+        },
+        {
+          "first": "Jason",
+          "last": "Jones",
+          "age": 42
+        }
+      ];
+
+      // List of available friends:
+      var myFriends = soma.template.create(document.querySelector('#myFriends'));
+      // The chosen friend:
+      var chosenFriend = soma.template.create(document.querySelector('#chosenFriend'));
+      myFriends.scope.friends = FriendsModel;
+      myFriends.scope.annouceFriend = function(event, friend) {
+        // Pass the friend to the chosenFriend template:
+        chosenFriend.scope.friend = friend;
+        // Update choseFriend template:
+        chosenFriend.render();
+      }  
+      myFriends.render();    
+
+    })();
+  </script>
+</body>
+</html>

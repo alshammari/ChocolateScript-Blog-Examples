@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soma Template Example-4</title>    
+  <link rel="stylesheet" href="chui/chui-ios-3.6.3.css">
+  <script type='text/javascript' src='js/jquery-2.1.1.min.js'></script>
+  <script type='text/javascript' src='chui/chui-3.6.3.min.js'></script>
+  <script src="js/soma-template.js"></script>
+  <style>
+    .data-cloak {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class='current'>
+    <h1 id='mainTitle'>Repeater $index</h1>
+  </nav>   
+  <article id='main' class='current'> 
+    <section> 
+      <h2>Friends:</h2>
+      <ul class="list" id='myFriends'>
+        <li data-repeat='name in friends'>
+          <h3>{{name.first}} {{name.last}} is friend number {{calculateIndex($index)}}</h3>
+        </li>
+      </ul>
+    </section>
+  </article>
+  <script>
+    (function() {
+
+      ///////////////////////////////////////
+      // Here's the array of items we'll use:
+      ///////////////////////////////////////
+      var FriendsModel = [
+        {
+          "first": "John",
+          "last": "Doe"
+        },
+        {
+          "first": "Joe",
+          "last": "Bodoni"
+        },
+        {
+          "first": "Suzy",
+          "last": "Cue"
+        },
+        {
+          "first": "Jason",
+          "last": "Jones"
+        }
+      ];
+
+      var myFriends = soma.template.create(document.querySelector('#myFriends'));
+      myFriends.scope.friends = FriendsModel;
+      myFriends.scope.calculateIndex = function(index) {
+        // Use the Number method in case
+        // the value is a string:
+        return Number(index) + 1;
+      }
+      myFriends.render();
+
+    })();
+  </script>
+</body>
+</html>

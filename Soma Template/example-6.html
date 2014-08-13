@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soma Template Example-6</title>    
+  <link rel="stylesheet" href="chui/chui-ios-3.6.3.css">
+  <script type='text/javascript' src='js/jquery-2.1.1.min.js'></script>
+  <script type='text/javascript' src='chui/chui-3.6.3.min.js'></script>
+  <script src="js/soma-template.js"></script>
+  <style>
+    .data-cloak {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class='current'>
+    <h1 id='mainTitle'>Data Event</h1>
+  </nav>   
+  <article id='main' class='current'> 
+    <section> 
+      <h2>Your Friends</h2>
+      <ul class='list' id='myFriends'>
+        <li data-click='annouceChoice(friend)' data-repeat='friend in friends'><h3>{{friend.first}} {{friend.last}}</h3></li>
+      </ul>      
+    </section>
+  </article>
+  <script>
+    (function() {
+      ///////////////////////////////////////
+      // Here's the array of items we'll use:
+      ///////////////////////////////////////
+      var FriendsModel = [
+        {
+          "first": "John",
+          "last": "Doe",
+          "age": 21
+        },
+        {
+          "first": "Joe",
+          "last": "Bodoni",
+          "age": 35
+        },
+        {
+          "first": "Suzy",
+          "last": "Cue",
+          "age": 20
+        },
+        {
+          "first": "Jason",
+          "last": "Jones",
+          "age": 42
+        }
+      ];
+
+      var myFriends = soma.template.create(document.querySelector('#myFriends'));
+      myFriends.scope.friends = FriendsModel;
+      // The first argument of a data-event will
+      // always be the event, the second, the data:
+      myFriends.scope.annouceChoice = function(event, name) {
+        alert(name.first + ' ' + name.last);
+      }
+      myFriends.render();    
+
+    })();
+  </script>
+</body>
+</html>
