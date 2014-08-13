@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='perfumesApp'>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Fragranz</title>
+    <link rel="stylesheet" href="./chui/chui-ios-3.5.5.css">
+    <link rel="stylesheet" href="./stylesheets/style.css">
+    <script type='text/javascript' src='./javascripts/jquery-2.1.1.min.js'></script>
+    <script type='text/javascript' src='./chui/chui-3.5.5.js'></script>
+    <script type='text/javascript' src='./javascripts/angular.min.js'></script>
+    <script>
+
+      // Define button interactions:
+      $(function () {
+        $('#addToCart').on('singletap', function() {
+          $.UIGoToArticle('#cart');
+        });
+        $('#placeOrder').on('singletap', function() {
+          $.UIGoToArticle('#confirmation');
+          $('#confirmationNum').text($.Uuid());
+        });
+        $('#cancelOrder').on('singletap', function() {
+          $.UIGoBackToArticle('#main');
+        });
+        $('#shoppingCart').on('singletap', function() {
+          var cartScope = angular.element('#cart').scope();
+          if (cartScope.cart.purchases.length) $.UIGoToArticle('#cart');
+          else     $.UIPopup({
+            id: "warning",
+            title: 'Empty Cart!', 
+            cancelButton: 'Close', 
+            message: 'The shopping cart is empty. Add some items using the "+" button on the lower left.'
+          });
+        });
+      });
+
+      //////////////////////////////////////////
+      // Initialize the CCGestures modules to 
+      // hold the event directives:
+      //////////////////////////////////////////
+      var CCGestures = angular.module('CCGestures',[]);
+
+      ///////////////////////////////////////////
+      // Iterate over array of avaialable events
+      // and add them to the CCGestures module:
+      ///////////////////////////////////////////
+      ["tap", "singletap", "longtap", "doubletap", "swipe", "swipeleft", 
+      "swiperight", "swipeup", "swipedown"].forEach(function(gesture) {
+
+        // Camel Case each directive:
+        //===========================
+        var ccGesture = "cc" + (gesture.charAt(0).toUpperCase() + gesture.slice(1));
+
+        // Create module for each directive:
+        //==================================
+        CCGestures.directive(ccGesture, ["$parse",
+          function($parse) {
+            return {
+              // Restrict to attribute:
+              restrict: "A",
+              compile: function ($element, attr) {
+                // Define the attribute for the gesture:
+                var fn = $parse(attr[ccGesture]);
+                return function ngEventHandler(scope, element) {
+                  // Register event for directive:
+                  $(element).on(gesture, function (event) {
+                    scope.$apply(function () {
+                      fn(scope, {$event: event});
+                    });
+                  });
+                };
+              }
+            };
+          }
+        ]);
+      });
+
+      // Define Angular controller:
+      var app = angular.module("perfumesApp", ['CCGestures']);
+      app.controller("perfumesCtrl", function ($scope, $http) {
+        $scope.perfumesCollection = [];
+        $scope.perfumes = {};
+        $scope.selectedGenre = '';
+        $scope.list = [];
+        $scope.selectedPerfume = {};
+        $scope.perfumeName = '';
+        $scope.cart = {};
+        $scope.cart.purchases = [];
+        $scope.cart.numberOfItems = 0;
+
+        // Get perfume data:
+        $http.get('./data/perfumes.json').success(function(data) {
+          $scope.perfumesCollection = data;
+        });
+        // Define method to get the genre of perfume chosen:
+        $scope.perfumes.getGenreOfPerfume = function(item) {
+          $scope.list = item.data;
+          $scope.selectedGenre = item.title
+        };
+        // Show details for the chosen perfume:
+        $scope.perfumes.showDetail = function(item) {
+          $scope.selectedPerfume = item;
+          $scope.perfumeName = item.product_title;
+        };
+        // Shopping Cart methods.
+        // Add chosen perfume to cart:
+        $scope.cart.addToCart = function() {
+          $scope.selectedPerfume.id = $.Uuid();
+          $scope.selectedPerfume.genre = $scope.selectedGenre;
+          $scope.cart.purchases.push($scope.selectedPerfume);
+        };
+        // Calcualte total cost of selected perfumes:
+        $scope.cart.totalCost = function() {
+          var ret = 0;
+          $scope.cart.purchases.forEach(function(item) {
+            ret += Number(item.wholesale_price);
+          });
+          return ret;
+        };
+        // Cancel order and reset values:
+        $scope.cart.cancelOrder = function() {
+          $scope.cart.purchases = [];
+          $scope.selectedPerfume = {};
+          $scope.selectedGenre = '';
+        };
+      });
+
+    </script>
+  </head>
+  <body ng-controller='perfumesCtrl'>
+  <nav class='current'>
+    <h1 id='mainTitle'>Perfumes</h1>
+  </nav>
+  <article id='main' class='current'>
+    <section>
+      <ul class='list' id='perfumeGenres'>
+        <li cc-singletap='perfumes.getGenreOfPerfume(perfume)' data-goto='perfumeList' ng-repeat="perfume in perfumesCollection">{{perfume.title}}</li>
+      </ul>
+    </section>
+  </article>  
+  <nav class='next'>
+    <a href='#' class='button back'>Perfumes</a>
+    <h1 id='perfumesGenreTitle'>{{ genre }}</h1>
+  </nav>
+  <article class='next' id='perfumeList'>
+    <section>
+      <ul class='list' id='available_perfumes'>
+        <li cc-singletap='perfumes.showDetail(perfume)' class='comp' ng-repeat="perfume in list" data-goto='detail'>
+          <aside>
+            <img height='60' ng-src='{{ perfume.img_prev }}'>
+          </aside>
+          <div>
+            <h3 class='productTitle'>{{ perfume.product_title }}</h3>
+            <h4>{{ perfume.short_description }}</h4>
+          </div>
+          <aside>
+            <span class='counter'>${{ perfume.wholesale_price }}</span>
+            <span class='show-detail'></span>
+          </aside>
+        </li>
+      </ul>
+    </section>
+  </article>
+
+  <nav class='next'>
+    <a href='#' class='button back' id='backToGenre'>{{ selectedGenre }}</a>
+    <h1 id='detailTitle'>{{ perfumeName }}</h1>
+  </nav>
+  <article class='next' id='detail'>
+    <section>
+      <ul class='list' id='perfumeDetail'>
+        <li>
+          <img ng-src="{{ selectedPerfume.img_prev }}">
+          <h3 class="productTitle">{{ selectedPerfume.product_title }}</h3>
+          <h4><span class="sku">SKU: {{ selectedPerfume.sku }}</span> </h4>
+          <h4 class="counter flush">${{ selectedPerfume.wholesale_price }}</h4>
+          <p class="longDescription">{{ selectedPerfume.long_description }}</p>
+        </li>
+      </ul>
+    </section>
+  </article>
+  <div class='toolbar next'>
+    <a href="javascript:void(null)" id='addToCart' cc-singletap='cart.addToCart()' class="button add"></a>
+    <a href="javascript:void(null)" id="shoppingCart" class="button align-flush"></a>
+  </div>
+  <nav class="next">
+    <a href='#' class='button back' id='backToGenre'>{{ perfumeName }}</a>
+    <h1>Cart</h1>
+  </nav>
+  <article id="cart" class="next">
+    <section>
+      <h2>Your Purchase:</h2>
+      <ul class="list" id="purchaseItems">
+        <li ng-repeat="item in cart.purchases">
+          <h3>{{ item.product_title }}</h3>
+          <h4>SKU: {{ item.sku }}</h4>
+          <p>Price: {{ item.wholesale_price | currency }}</p>
+        </li>
+      </ul>
+      <h2>Total:</h2>
+      <ul class="list">
+        <li class='comp'>
+          <div><h3>Total Items:</h3></div>
+          <aside><h4 id="totalItems" ng-bind='cart.purchases.length'></h4></aside>
+        </li>
+        <li class='comp'>
+          <div><h3>Total Cost:</h3></div>
+          <aside><h4 id="totalCost" ng-bind='cart.totalCost() | currency'>0.00</h4></aside>
+        </li>
+      </ul>
+      <div id='orderButtons'>
+        <a id="placeOrder" href="#" class="button action">Place Order</a>
+        <a id="cancelOrder" cc-singletap='cart.cancelOrder()' href="#" class="button action">Cancel Order</a>
+      </div>
+    </section>
+  </article>
+  <nav class="next">
+    <a href='#' class='button back' id='backToGenre'>Cart</a>
+    <h1>Confirmation</h1>
+  </nav>
+  <article id="confirmation">
+    <section>
+      <ul class="list">
+        <li>
+          <h3>Your Order Was Successful!</h3>
+          <h4>Confirmation number: <span id="confirmationNum"></span></h4>
+        </li>
+      </ul>
+      <h2>Purchase Details:</h2>
+      <ul class="list">
+        <li ng-repeat="item in cart.purchases | orderBy: 'genre'">
+          <h3>{{ item.genre}}: {{ item.product_title }}</h3>
+        </li>
+      </ul>
+      <h2>Total Amount Charged:</h2>
+      <ul class="list">
+        <li>
+          <h3><span id="confirmTotalCost" ng-bind='cart.totalCost() | currency'>0.00</span></h3>
+        </li>
+      </ul>
+    </section>
+  </article>
+  </body>
+</html>
