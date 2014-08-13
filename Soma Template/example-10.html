@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soma Template Example-10</title>    
+  <link rel="stylesheet" href="chui/chui-ios-3.6.3.css">
+  <script type='text/javascript' src='js/jquery-2.1.1.min.js'></script>
+  <script type='text/javascript' src='chui/chui-3.6.3.min.js'></script>
+  <script src="js/soma-template.js"></script>
+  <style>
+    .data-cloak {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class='current'>
+    <h1 id='mainTitle'>Watchers</h1>
+  </nav>   
+  <article id='main' class='current'> 
+    <section> 
+    <h2>Format Date with Watcher</h2>
+    <ul class="list">
+      <li>
+        <h3 id='unformattedDate'>Date unformatted: {{date}}</h3>
+        <h4 id='formatedDate'>Date formatted: {{date}}</h4>
+      </li>
+    </ul>
+    <h2>Format Date without Watcher</h2>
+    <ul class="list">
+      <li>
+        <h3 id='dateUnformatted'>Unformatted: {{date}}</h3>
+        <h4 id='dateFormatted'>Formatted: {{formateDate(date)}}</h4>
+      </li>
+    </ul>
+    </section>
+  </article>
+  <script>
+    (function(window) {
+
+      // Create a template instance for each date:
+      var unformattedDate = soma.template.create(document.getElementById('unformattedDate'));
+      var formatedDate = soma.template.create(document.getElementById('formatedDate'));
+
+
+      var today = new Date();
+
+      // Bind date of unformatted template:
+      unformattedDate.scope.date = today;
+      unformattedDate.render();
+
+      // Bind date to formatted template.
+      // Make sure date is a string:
+      formatedDate.scope.date = String(today);
+      // Set watcher to intercept and format incoming date:
+      formatedDate.watch('date', function(oldValue, newValue) {
+         return newValue.match(/\w{3} \d{2} \d{4}/);
+      });
+      formatedDate.render(); 
+
+      ///////////////////////////////
+      // Format date without watcher:
+      ///////////////////////////////
+
+      // Create a template instance for each date:
+      var dateUnformatted = soma.template.create(document.getElementById('dateUnformatted'));
+      var dateFormatted = soma.template.create(document.getElementById('dateFormatted'));
+      dateUnformatted.scope.date = today;
+      dateUnformatted.render();
+
+      dateFormatted.scope.date = String(today);
+      dateFormatted.scope.formateDate = function(today) {
+        return String(today).match(/\w{3} \d{2} \d{4}/);
+      };
+      dateFormatted.render();
+
+    })(window);
+  </script>
+</body>
+</html>
