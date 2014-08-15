@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>ChocolateChip-UI iOS</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
+  <script src="./chui/jquery-2.1.1.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+  <script src="./chui/soma-template.js"></script>
+  <script>
+    var recipes = [
+      {
+        "name": "Italian Style Meatloaf",
+        "image": "images/meatloaf.jpg",
+        "ingredients" : [
+          "1 1/2 pounds ground beef",
+          "2 eggs, beaten",
+          "3/4 cup dry bread crumbs",
+          "1/4 cup ketchup",
+          "1 teaspoon Italian-style seasoning",
+          "1 teaspoon garlic salt",
+          "1 (14.5 ounce) can diced tomatoes, drained"
+        ],
+        "directions": [
+          "Preheat oven to 350 degrees F (175 degrees C).",
+          "In a large bowl, mix together ground beef, eggs, bread crumbs and ketchup. Season with Italian-style seasoning, oregano, basil, garlic salt, diced tomatoes and cheese. Press into a 9x5 inch loaf pan, and cover loosely with foil.",
+          "Bake in the preheated oven approximately 1 hour, or until internal temperature reaches 160 degrees F (70 degrees C)."
+        ]
+      },
+      {
+        "name": "Chicken Marsala",
+        "image": "images/chicken-marsala.jpg",
+        "ingredients" : [
+          "1/4 cup all-purpose flour for coating",
+          "1/2 teaspoon salt",
+          "1/4 teaspoon ground black pepper",
+          "1/2 teaspoon dried oregano",
+          "4 skinless, boneless chicken breast halves - pounded 1/4 inch thick",
+          "4 tablespoons butter",
+          "4 tablespoons olive oil",
+          "1 cup sliced mushrooms",
+          "1/2 cup Marsala wine",
+          "1/4 cup cooking sherry"
+        ],
+        "directions": [
+          "In a shallow dish or bowl, mix together the flour, salt, pepper and oregano. Coat chicken pieces in flour mixture.",
+          "In a large skillet, melt butter in oil over medium heat. Place chicken in the pan, and lightly brown. Turn over chicken pieces, and add mushrooms. Pour in wine and sherry. Cover skillet; simmer chicken 10 minutes, turning once, until no longer pink and juices run clear."
+        ]
+      },
+      {
+        "name": "Chicken Breasts with Lime Sauce",
+        "image": "images/chicken-breast-lime.jpg",
+        "ingredients" : [
+         "4 skinless, boneless chicken breast halves - pounded to 1/4 inch thickness",
+         "1 egg, beaten",
+         "2/3 cup dry bread crumbs",
+         "2 tablespoons olive oil",
+         "1 lime, juiced",
+         "6 tablespoons butter",
+         "1 teaspoon minced fresh chives",
+         "1/2 teaspoon dried dill weed"
+        ],
+        "directions": [
+          "Coat chicken breasts with egg, and dip in bread crumbs. Place on a wire rack, and allow to dry for about 10 minutes.",
+          "Heat olive oil in a large skillet over medium heat. Place chicken into the skillet, and fry for 3 to 5 minutes on each side. Remove to a platter, and keep warm.",
+          "Drain grease from the skillet, and squeeze in lime juice. Cook over low heat until it boils. Add butter, and stir until melted. Season with chives and dill. Spoon sauce over chicken, and serve immediately."
+        ]
+      },
+      {
+        "name": "Lemon Rosemary Salmon",
+        "image": "images/salmon-lemon-rosemary.jpg",
+        "ingredients" : [
+          "1 lemon, thinly sliced",
+          "4 sprigs fresh rosemary",
+          "2 salmon fillets, bones and skin removed coarse salt to taste",
+          "1 tablespoon olive oil, or as needed"
+        ],
+        "directions": [
+          "Preheat oven to 400 degrees F (200 degrees C).",
+          "Arrange half the lemon slices in a single layer in a baking dish. Layer with 2 sprigs rosemary, and top with salmon fillets. Sprinkle salmon with salt, layer with remaining rosemary sprigs, and top with remaining lemon slices. Drizzle with olive oil.",
+          "Bake 20 minutes in the preheated oven, or until fish is easily flaked with a fork."
+        ]
+      },
+      {
+        "name": "Strawberry Angel Food Dessert",
+        "image": "images/strawberry-shortcake.jpg",
+        "ingredients" : [
+          "1 (10 inch) angel food cake",
+          "2 (8 ounce) packages cream cheese, softened",
+          "1 cup white sugar",
+          "1 (8 ounce) container frozen whipped topping, thawed",
+          "1 quart fresh strawberries, sliced",
+          "1 (18 ounce) jar strawberry glaze"
+        ],
+        "directions": [
+          "Crumble the cake into a 9x13 inch dish.",
+          "Beat the cream cheese and sugar in a medium bowl until light and fluffy. Fold in whipped topping. Mash the cake down with your hands and spread the cream cheese mixture over the cake.",
+          "In a bowl, combine strawberries and glaze until strawberries are evenly coated. Spread over cream cheese layer. Chill until serving."
+        ]
+      }
+    ];
+  
+    $(function() {
+
+      ////////////////////////////
+      // Define namespace for app:
+      ////////////////////////////
+      var app = {};
+
+      ////////////////////////
+      // Initialize slide out:
+      ////////////////////////
+      $.UISlideout({dynamic: true, callback: function(li) {
+        var choice = $(li).index();
+        $.publish('chosen-item', choice);
+      }});
+
+      ///////////////////////////
+      // Populate slide out menu:
+      ///////////////////////////
+      $.UISlideout.populate([
+        { meatloaf: 'Italian Style Meatloaf' },
+        { chicken_marsala: 'Chicken Marsala' },
+        { chicken_breasts: 'Chicken Breasts with Lime Sauce' },
+        { lemon_salmon: 'Lemon Rosemary Salmon' },
+        { angel_food: "Strawberry Angel Food Dessert"}
+      ]);
+
+
+      /////////////////////////////////////
+      // Define mediator to display recipe:
+      /////////////////////////////////////
+      app.ChosenRecipeMediator = $.subscribe('chosen-item', function(event, choice) {
+        // Close slide out:
+        $('.slide-out').removeClass('open');
+        // Render template to screen:
+        app.showRecipe(recipes[choice])
+      });
+
+      ////////////////////////
+      // Create recipe markup:
+      ////////////////////////
+      app.showRecipe = function(recipe) {
+        var recipeScope = $('#recipe');
+        recipeScope.empty();
+        recipeScope.append("<h3>" + recipe.name + "</h3>");
+        recipeScope.append("<img title='" + recipe.name + "' src='" + recipe.image + "'>");
+        var ingredients = '<h4>Ingredients</h4><ul>';
+        recipe.ingredients.forEach(function(item) {
+          ingredients += "<li>" + item + "</li>";
+        });
+        ingredients += "</ul>";
+        recipeScope.append(ingredients);
+        var directions = "<p>Directions</p><ol>";
+        recipe.directions.forEach(function(item) {
+          directions += "<li>" + item + "</li>";
+        });
+        directions += '</ol>'
+        recipeScope.append(directions);
+        $('#choiceTitle').text(recipe.name);
+      };
+
+      ///////////////////////////////
+      // Initial setup for load time.
+      // Load first recipe:
+      ///////////////////////////////
+      $.publish('chosen-item', 0);
+
+    });
+  </script>
+</head>
+<body>
+  <nav>
+    <h1 id='choiceTitle'></h1>
+  </nav>
+  <article id='recipes'>
+    <section>
+      <ul class="list">
+        <li id='recipe'></li>
+      </ul>
+    </section>
+  </article>
+</body>
+</html>
