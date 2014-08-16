@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>Horizontal Scroll Panel</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      $.fn.extend({
+        UIHorizontalScrollPanel : function () {
+          return this.each(function() {
+            var scrollPanel = $(this).find('ul');
+            var panelsWidth = 0;
+            scrollPanel.find('li').each(function(_, ctx) {
+                panelsWidth += parseInt($(ctx).outerWidth(true));
+            });
+            var parentPadding = (parseInt($(this).css('padding-left')) + parseInt($(this).css('padding-right')));
+            scrollPanel.css('width', (panelsWidth + (parentPadding + parentPadding / 2)));
+          });
+        }
+      });
+
+      $('.horizontal-scroll-panel').UIHorizontalScrollPanel();
+    });
+  </script>
+  <style>
+    .horizontal-scroll-panel {
+      width: 100%;
+      height: 200px;
+      background-color: #ccc;
+      padding: 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      overflow-y: hidden !important;
+      overflow-x: auto;
+    }
+    .horizontal-scroll-panel > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      -webkit-padding-start: 0;
+      font-size: 0;
+    }
+    .horizontal-scroll-panel li {
+      display: inline-block;
+      border: solid 1px #666;
+      box-shadow: 0 0 4px #666;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      margin-right: 20px;
+      font-size: 0;
+    }
+    .horizontal-scroll-panel li:first-of-type {
+      margin-left: 0 !important;
+    }
+    .horizontal-scroll-panel li:last-of-type {
+      margin-right: 0 !important;
+    }
+    img {
+      height: 200px !important;
+    }
+
+    [dir=rtl] .horizontal-scroll-panel li {
+      margin-right: 0 !important;
+      margin-left: 20px !important;
+    }
+    [dir=rtl] .horizontal-scroll-panel li:first-of-type {
+      margin-right: 0 !important;
+    }
+    [dir=rtl] .horizontal-scroll-panel li:last-of-type {
+      margin-left: 0 !important;
+    }
+    
+    @media only screen and (max-device-width: 320px) {
+      .horizontal-scroll-panel {
+        height: 125px;
+        padding: 10px;
+      }
+      .horizontal-scroll-panel li {
+        height: 125px;
+        width: 125px;
+      }
+      img {
+        height: 125px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="current">
+    <h1>Horizontal Scroll Panel</h1>
+  </nav>
+  <article id="main" class="current">
+    <section>
+      <div class='horizontal-scroll-panel'>
+        <ul>
+          <li><img src='images/pic-01.jpg'></li>
+          <li><img src='images/pic-02.jpg'></li>
+          <li><img src='images/pic-03.jpg'></li>
+          <li><img src='images/pic-04.jpg'></li>
+          <li><img src='images/pic-05.jpg'></li>
+          <li><img src='images/pic-06.jpg'></li>
+          <li><img src='images/pic-07.jpg'></li>
+          <li><img src='images/pic-08.jpg'></li>
+          <li><img src='images/pic-09.jpg'></li>
+          <li><img src='images/pic-10.jpg'></li>
+          <li><img src='images/pic-11.jpg'></li>
+          <li><img src='images/pic-12.jpg'></li>
+          <li><img src='images/pic-13.jpg'></li>
+          <li><img src='images/pic-14.jpg'></li>
+          <li><img src='images/pic-15.jpg'></li>
+          <li><img src='images/pic-16.jpg'></li>
+          <li><img src='images/pic-17.jpg'></li>
+          <li><img src='images/pic-18.jpg'></li>
+          <li><img src='images/pic-19.jpg'></li>
+          <li><img src='images/pic-20.jpg'></li>
+          <li><img src='images/pic-21.jpg'></li>
+          <li><img src='images/pic-22.jpg'></li>
+          <li><img src='images/pic-23.jpg'></li>
+          <li><img src='images/pic-24.jpg'></li>
+          <li><img src='images/pic-25.jpg'></li>
+          <li><img src='images/pic-26.jpg'></li>
+          <li><img src='images/pic-27.jpg'></li>
+        </ul>
+      </div> 
+      <br>
+      <div class='horizontal-scroll-panel'>
+        <ul>
+          <li><img src='images/pic-01.jpg'></li>
+          <li><img src='images/pic-02.jpg'></li>
+          <li><img src='images/pic-03.jpg'></li>
+          <li><img src='images/pic-04.jpg'></li>
+          <li><img src='images/pic-05.jpg'></li>
+          <li><img src='images/pic-06.jpg'></li>
+          <li><img src='images/pic-07.jpg'></li>
+          <li><img src='images/pic-08.jpg'></li>
+          <li><img src='images/pic-09.jpg'></li>
+          <li><img src='images/pic-10.jpg'></li>
+          <li><img src='images/pic-11.jpg'></li>
+          <li><img src='images/pic-12.jpg'></li>
+        </ul>
+      </div> 
+    </section>
+  </article>
+</body>
+</html>
