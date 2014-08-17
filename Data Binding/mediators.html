@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>Data Binding</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      
+      ///////////////////////////
+      // Bind input to paragraph:
+      ///////////////////////////
+      $('#input-source').on('input', function(e) {
+        $.publish('update-text', $(this).val());
+      })
+      var InputMediator = $.subscribe('update-text', function(event, text) {
+        $('#input-output').text(text);
+      });
+
+      ////////////////////////////////
+      // Bind select box to paragraph:
+      ////////////////////////////////
+      $('#select-source').on('change', function(e) {
+        $.publish('select-change', $(this).val());
+      });
+      var SelectBoxMediator = $.subscribe('select-change', function(event, choice) {
+        $('#select-value').text(choice);
+      });
+      // Set initial value of SelectBox:
+      $.publish('select-change', $('#select-source').val());
+
+      /////////////////////////////////
+      // Bind range input to paragraph:
+      /////////////////////////////////
+      $('#range').on('input', function(e) {
+        $.publish('range-value', $(this).val());
+      });
+      var RangeInputMediator = $.subscribe('range-value', function(event, value) {
+        $('#range-output').text(value);
+      });
+      $.publish('range-value', $('#range').val());
+
+      ///////////////////////////////////
+      // Bind radio buttons to paragraph:
+      ///////////////////////////////////
+      $('input[type=radio]').on('change', function(e) {
+        $.publish('radio-choice', $(this).val());
+      });
+      var RadioMediator = $.subscribe('radio-choice', function(event, value) {
+        $('#radio-output').text(value);
+      });
+
+    });
+  </script>
+  
+</head>
+<body>
+  <nav class="current">
+    <h1>Data Binding</h1>
+  </nav>
+  <article id="main" class="current">
+    <section>
+      <ul class="list">
+        <li><lable>Enter data:</lable> <input id='input-source' type='text'></li>
+        <li><h3 id='input-output'></h3></li>
+      </ul>
+      <ul class="list">
+        <li>
+          <select name="changed" id="select-source">
+            <option value="First Choice">First Choice</option>
+            <option value="Second Choice">Second Choice</option>
+            <option value="Third Choice">Third Choice</option>
+          </select>
+        </li>
+      </ul>
+      <p id="select-value">select</p>
+      
+      <ul class="list">
+        <li>
+          <input type="range" id="range">
+        </li>
+      </ul>
+      <p id="range-output">range</p>
+
+      <ul class="list">
+        <li><label>One:</labe> <input type="radio" value="One" name="radio"></li>
+        <li><label>Two:</labe> <input type="radio" value="Two" name="radio"></li>
+        <li><label>Three: </labe> <input type="radio" value="Three" name="radio"></li>
+      </ul>
+      <p id="radio-output">radio</p>
+    </section>
+  </article>
+</body>
+</html>

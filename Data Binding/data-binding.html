@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>Data Binding</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+  <script type="text/javascript">
+
+      
+    var InputTextModel = function() {
+      // Data is a simple string:
+      this.data = '';
+      var $this = this;
+      $.subscribe('data-binding-input-value', function(event, data) {
+        $this.data = data;
+      });
+      this.get = function() {
+        return this.data;
+      }
+      this.set = function(data) {
+        $.publish('data-binding-input-value', data);
+        $.publish('update-input-value', data);
+      }
+    };
+    var myText = new InputTextModel();
+
+    $(function() {
+
+      //////////////////////////////////////////
+      // Plugin to setup automatic data binding:
+      //////////////////////////////////////////
+      $.extend($, {
+        UIDataBinding : function () {
+
+          var controllers = $('[data-controller]');
+          var broadcasts = [];
+
+          // Define function to create broadcasts:
+          //======================================
+          var createBroadcaster = function(controller) {
+            var broadcast = 'data-binding-' + $(controller).attr('data-controller');
+            broadcasts.push(broadcast);
+          };
+
+          // Loop controllers, create broadcasts,
+          // subscribe models to broadcasts:
+          //=====================================
+          controllers.each(function(idx, ctx) {
+            var model = $(ctx).attr('data-controller');
+            createBroadcaster(ctx);
+            // Subscribe and update elements with data:
+            $.subscribe(broadcasts[idx], function(event, value) {
+              var element = '[data-model=' + model + ']';
+              $(element).text(value);
+            });
+          });
+
+          // Bind events to controllers to publish broadcasts:
+          //==================================================
+          controllers.on('input change', function(event) {
+            var broadcast = 'data-binding-' + $(this).attr('data-controller');
+            $.publish(broadcast, $(this).val());
+          });
+        }
+      });
+      $.UIDataBinding();
+      var updateInputText = $.subscribe('update-input-value', function(event, data) {
+        $('#myText').val(data);
+      });
+
+    });
+  </script>
+  
+</head>
+<body>
+  <nav class="current">
+    <h1>Data Binding</h1>
+  </nav>
+  <article id="main" class="current">
+    <section>
+      <ul class="list">
+        <li><lable>Enter data:</lable> 
+          <input id='myText' data-controller='input-value' type='text'></li>
+        <li>
+          <h3 data-model='input-value'></h3>
+        </li>
+      </ul>
+      <ul class="list">
+        <li>
+          <select name="changed" data-controller="select-value">
+            <option value="choice_1">First Choice</option>
+            <option value="choice_2">Second Choice</option>
+          </select>
+        </li>
+      </ul>
+      <p data-model="select-value">select</p>
+      
+      <ul class="list">
+        <li>
+          <input type="range" data-controller="range-output">
+        </li>
+      </ul>
+      <p data-model="range-output">range</p>
+
+      <ul class="list">
+        <li>
+          <input data-controller='radio-output' type="radio" value="1" name="radio">
+        </li>
+        <li>
+          <input data-controller='radio-output' type="radio" value="2" name="radio">
+        </li>
+        <li>
+          <input data-controller='radio-output' type="radio" value="3" name="radio">
+        </li>
+      </ul>
+      <p data-model="radio-output">radio</p>
+    </section>
+  </article>
+</body>
+</html>
