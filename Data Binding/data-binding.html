@@ -28,6 +28,8 @@
         $.publish('update-input-value', data);
       }
     };
+
+    // Create an instance of InputTextModel:
     var myText = new InputTextModel();
 
     $(function() {
@@ -63,7 +65,7 @@
 
           // Bind events to controllers to publish broadcasts:
           //==================================================
-          controllers.on('input change', function(event) {
+          $('body').on('input change', '[data-controller]', function(event) {
             var broadcast = 'data-binding-' + $(this).attr('data-controller');
             $.publish(broadcast, $(this).val());
           });
