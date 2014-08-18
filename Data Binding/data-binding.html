@@ -15,13 +15,13 @@
       
     var InputTextModel = function() {
       // Data is a simple string:
-      this.data = '';
+      var private_data = '';
       var $this = this;
       $.subscribe('data-binding-input-value', function(event, data) {
-        $this.data = data;
+        private_data = data;
       });
       this.get = function() {
-        return this.data;
+        return private_data;
       }
       this.set = function(data) {
         $.publish('data-binding-input-value', data);
