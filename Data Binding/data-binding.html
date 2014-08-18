@@ -70,6 +70,11 @@
         }
       });
       $.UIDataBinding();
+
+      // Set initial state of select box:
+      $.publish('data-binding-select-value', $('select').val());
+      // Set initial state of range input:
+      $.publish('data-binding-range-output', $('input[type=range]').val());
       var updateInputText = $.subscribe('update-input-value', function(event, data) {
         $('#myText').val(data);
       });
