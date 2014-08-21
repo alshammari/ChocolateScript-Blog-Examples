@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>Toggle Panels</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
+  <script src="./chui/jquery-2.1.1.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+  <style>
+    #fruit img {
+      height: 50px;
+    }
+  </style>
+  <script>
+    $(function() {
+
+      var fruits = [
+          {
+            "name": "Apples",
+            "uses": ["Pastries", "Juice", "Cider"],
+            "benefits": ["Reduce bad cholesterol", "Reduce risk to several types of cancer"],
+            "image": "./images/apple.png"
+          },
+          {
+            "name": "Oranges",
+            "uses": ["Juice", "Salad", "Desserts"],
+            "benefits": ["Boost immune system", "High in fiber"],
+            "image": "./images/orange.png"
+          },
+          {
+            "name": "Bananas",
+            "uses": ["Smoothies", "Desserts", "Salad"],
+            "benefits": ["Good source of potassium", "Contain C, B-6, manganese and fiber"],
+            "image": "./images/banana.png"
+          }
+        ];
+
+        var target = $('#dynamicContent');
+
+        // Define options for segmented control:
+        //======================================
+        var segmentedOptions = {
+          id: 'mySegmented',
+          labels : ['Apples','Oranges','Bananas']
+        };
+
+        // Get which segment the user tapped:
+        //===================================
+        var getSelection = function(event) {
+          var selection = $(event.target).index();
+          RenderFruitSelection(selection);
+        };
+
+        // Define callback for segmented control:
+        //=======================================
+        function RenderFruitSelection (index) {
+          $('#fruit h3').text(fruits[index].name);
+          $('#fruit img').attr('src', fruits[index].image)
+          target.find('#uses').empty();
+          fruits[index].uses.forEach(function(ctx) {
+            target.find('#uses').append('<li><h3>' + ctx +'</h3></li>')
+          });
+          target.find('#benefits').empty();
+          fruits[index].benefits.forEach(function(ctx) {
+            target.find('#benefits').append('<li><h3>' + ctx +'</h3></li>')
+          });
+        }
+
+        // Render first choice at load time:
+        //==================================
+        RenderFruitSelection(0);
+
+        // Create segmented control:
+        //==========================
+        var fruitSegmentedCtrl = $.UICreateSegmented(segmentedOptions);
+
+        // Append segmented control to document:
+        //======================================
+        $('#segmentedPanel').append(fruitSegmentedCtrl);
+
+        // Init Segmented Control:
+        //========================
+        $('#mySegmented').UISegmented({
+          selected: 0, 
+          callback: getSelection
+        });
+    });
+  </script>
+</head>
+<body>
+    <nav class="current">
+      <h1>Toggle Panels</h1>
+    </nav>
+    <article id="main" class="current">
+      <section>
+        <h2>Dynamic Content</h2>
+        <div id='segmentedPanel' class='horizontal centered'>
+        </div>
+
+        <div id="dynamicContent">
+          <ul class="list" id='fruit'>
+            <li class="comp">
+              <aside><img src="" alt=""></aside>
+              <div>
+                <h3></h3>
+              </div>
+            </li>
+          </ul>
+          <h2>Uses</h2>
+          <ul id='uses' class='list'>
+          </ul>
+          <h2>Benefits</h2>
+          <ul id='benefits' class='list'>
+          </ul>
+        </div>
+      </section>
+    </article>
+</body>
+</html>
