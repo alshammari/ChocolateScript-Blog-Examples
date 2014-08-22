@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="./chui/jquery-2.1.1.min.js"></script>
+  <script src="./chui/chui-3.6.3.js"></script>
+</head>
+<body>
+<p><input type="text"></p>
+<p id="result"></p>
+  
+  <script>
+    
+    ///////////////////////
+    // Dependency Injector:
+    ///////////////////////
+    var Injector = function(fn) {
+      var $this = this;
+      // Store for dependencies
+      //=======================
+      this.dependencies = [];
+
+      // Map a string name to a dependency:
+      //===================================
+      this.map = function(name, dependency) {
+        this.dependencies[name] = dependency;
+      };
+
+      // Get a mapped dependency:
+      //=========================
+      this.get = function(dependencyArray) {
+        var self = this;
+        return dependencyArray.map(function(value) {
+            return self.dependencies[value];
+        });            
+      };
+
+      // Run the code with dependencies:
+      //================================
+      this.run = function(fn) {
+        var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+        var FN_STRING = fn.toString();
+        var ARGS = FN_STRING.match(FN_ARGS)[1].split(',');
+        ARGS = ARGS.map(function(value) {
+          return value.trim();
+        });
+        fn.apply(fn, this.get(ARGS));
+      };
+
+      // Semantic alias for "run" function
+      // because dependencies are injected
+      // into the argument passed to it.
+      //==================================
+      this.injectInto = function(fn) {
+        return this.run(fn);
+      };
+    };
+
+
+    ///////////
+    // Example:
+    ///////////
+
+    // Function with dependency,
+    // this will be indicated
+    // when the mappping occurs:
+    //==========================
+    var MsgControllerOne = function (FirstMessage) {
+        document.write('<p>' + FirstMessage.announce() + '</p>');
+    };
+
+    // Function with dependencies,
+    // these will be indicated
+    // when the mappping occurs:
+    //============================
+    var MsgContollerTwo = function(FirstMessage, BozoMessage, WobbaMessage) {
+      document.write('<p>' + FirstMessage.announce() + ' : ' + BozoMessage.announce() + '</p>');
+      document.write('<p>' + WobbaMessage ('Wobba was here!!!') + '</p>');
+
+    };
+
+    // Function that will be injected:
+    var FirstMsg = {
+      announce: function() {
+        return 'This is the first message';
+      }
+    };
+
+    // Function that will be injected:
+    var SecondMsg = {
+      announce: function() {
+        return 'Bozo the Clown was here!';
+      }
+    };
+
+    // Function that will be injected:
+    var ThirdMsg = function(msg) {
+      return 'This another message: ' + msg;
+    };
+
+    // Create instance of dependency injector:
+    //========================================
+    var app = new Injector();
+
+    // Map dependencies to string names:
+    //==================================
+    app.map('FirstMessage', FirstMsg);
+    app.map('BozoMessage', SecondMsg);
+    app.map('WobbaMessage', ThirdMsg);
+
+    ////////////////////////////////////////
+    // Run instance and inject dependencies:
+    ////////////////////////////////////////
+    app.run(function() {
+
+      // Inject dependencies into functions:
+      app.injectInto(MsgControllerOne);
+      app.injectInto(MsgContollerTwo);
+
+      var input = document.querySelector('input');
+      var result = document.querySelector('#result');
+
+      // Add event listener to publish updates:
+      input.addEventListener('input', function(e) {
+        $.publish('input-value', this.value);
+      });
+
+      // Define mediator to subscribe to updates:
+      var Mediator = $.subscribe('input-value', function(e, value) {
+        result.innerHTML = value;
+      });
+    });
+
+  </script>
+</body>
+</html>
