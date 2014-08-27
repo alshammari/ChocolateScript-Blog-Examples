@@ -1,137 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Document</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>ChocolateChip-UI iOS</title>
+  <link rel="stylesheet" href="./chui/chui-ios-3.6.3.css">
   <script src="./chui/jquery-2.1.1.min.js"></script>
   <script src="./chui/chui-3.6.3.js"></script>
-</head>
-<body>
-<p><input type="text"></p>
-<p id="result"></p>
   
   <script>
     
-    ///////////////////////
-    // Dependency Injector:
-    ///////////////////////
-    var Injector = function(fn) {
-      var $this = this;
-      // Store for dependencies
-      //=======================
-      this.dependencies = [];
+    $(function() {
+      ///////////////////////
+      // Dependency Injector:
+      ///////////////////////
+      var Injector = function(fn) {
+        // Store for dependencies
+        //=======================
+        this.dependencies = [];
 
-      // Map a string name to a dependency:
-      //===================================
-      this.map = function(name, dependency) {
-        this.dependencies[name] = dependency;
+        // Map a string name to a dependency:
+        //===================================
+        this.map = function(name, dependency) {
+          this.dependencies[name] = dependency;
+        };
+
+        // Get a mapped dependency:
+        //=========================
+        this.get = function(dependencyArray) {
+          var self = this;
+          return dependencyArray.map(function(value) {
+              return self.dependencies[value];
+          });            
+        };
+
+        // Run the code with dependencies:
+        //================================
+        this.run = function(fn) {
+          var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+          var FN_STRING = fn.toString();
+          var ARGS = FN_STRING.match(FN_ARGS)[1].split(',');
+          ARGS = ARGS.map(function(value) {
+            return value.trim();
+          });
+          fn.apply(fn, this.get(ARGS));
+        };
+
+        // Semantic alias for "run" function
+        // because dependencies are injected
+        // into the argument passed to it.
+        //==================================
+        this.injectInto = function(fn) {
+          return this.run(fn);
+        };
       };
 
-      // Get a mapped dependency:
-      //=========================
-      this.get = function(dependencyArray) {
-        var self = this;
-        return dependencyArray.map(function(value) {
-            return self.dependencies[value];
-        });            
+
+      ///////////
+      // Example:
+      ///////////
+
+      // Function with dependency,
+      // this will be indicated
+      // when the mappping occurs:
+      //==========================
+      var MsgControllerOne = function (FirstMessage) {
+        var list = $('<ul></ul>');
+        list.addClass('list');
+        $(list).append('<li>' + FirstMessage.announce() + '.</li>');
+        $('#inputList').before(list);
       };
 
-      // Run the code with dependencies:
-      //================================
-      this.run = function(fn) {
-        var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
-        var FN_STRING = fn.toString();
-        var ARGS = FN_STRING.match(FN_ARGS)[1].split(',');
-        ARGS = ARGS.map(function(value) {
-          return value.trim();
-        });
-        fn.apply(fn, this.get(ARGS));
+      // Function that will be injected:
+      var FirstMsg = {
+        announce: function() {
+          return 'First message';
+        }
       };
 
-      // Semantic alias for "run" function
-      // because dependencies are injected
-      // into the argument passed to it.
+      // Function that will be injected:
+      var SecondMsg = {
+        announce: function(msg) {
+          return msg;
+        }
+      };
+
+      // Function that will be injected:
+      var ThirdMsg = function(msg) {
+        return 'Third message: ' + msg;
+      };
+
+      // Create instance of dependency injector:
+      //========================================
+      var app = new Injector();
+
+      // Map dependencies to string names:
       //==================================
-      this.injectInto = function(fn) {
-        return this.run(fn);
-      };
-    };
+      app.map('FirstMessage', FirstMsg);
+      app.map('SecondMessage', SecondMsg);
+      app.map('WobbaMessage', ThirdMsg);
 
+      ////////////////////////////////////////
+      // Run instance and inject dependencies:
+      ////////////////////////////////////////
+      app.run(function() {
 
-    ///////////
-    // Example:
-    ///////////
+        // Inject dependencies into function:
+        //===================================
+        app.injectInto(MsgControllerOne);
 
-    // Function with dependency,
-    // this will be indicated
-    // when the mappping occurs:
-    //==========================
-    var MsgControllerOne = function (FirstMessage) {
-        document.write('<p>' + FirstMessage.announce() + '</p>');
-    };
+        // Inject dependencies into anonymous function:
+        //=============================================
+        app.injectInto(function(FirstMessage, SecondMessage, WobbaMessage) {
+          var list = $('<ul></ul>');
+          list.addClass('list');
+          $(list).append('<li>' + FirstMessage.announce() + SecondMessage.announce(' + second message.') + '</li>');
+          $(list).append('<li>' + WobbaMessage ('Wobba was here!!!') + '</li>');
+          $('#inputList').before(list);
+        });
 
-    // Function with dependencies,
-    // these will be indicated
-    // when the mappping occurs:
-    //============================
-    var MsgContollerTwo = function(FirstMessage, BozoMessage, WobbaMessage) {
-      document.write('<p>' + FirstMessage.announce() + ' : ' + BozoMessage.announce() + '</p>');
-      document.write('<p>' + WobbaMessage ('Wobba was here!!!') + '</p>');
+        var input = $('input');
+        var result = $('#result');
 
-    };
+        // Add event listener to publish updates:
+        input.on('input', function(e) {
+          $.publish('input-value', $(this).val());
+        });
 
-    // Function that will be injected:
-    var FirstMsg = {
-      announce: function() {
-        return 'This is the first message';
-      }
-    };
-
-    // Function that will be injected:
-    var SecondMsg = {
-      announce: function() {
-        return 'Bozo the Clown was here!';
-      }
-    };
-
-    // Function that will be injected:
-    var ThirdMsg = function(msg) {
-      return 'This another message: ' + msg;
-    };
-
-    // Create instance of dependency injector:
-    //========================================
-    var app = new Injector();
-
-    // Map dependencies to string names:
-    //==================================
-    app.map('FirstMessage', FirstMsg);
-    app.map('BozoMessage', SecondMsg);
-    app.map('WobbaMessage', ThirdMsg);
-
-    ////////////////////////////////////////
-    // Run instance and inject dependencies:
-    ////////////////////////////////////////
-    app.run(function() {
-
-      // Inject dependencies into functions:
-      app.injectInto(MsgControllerOne);
-      app.injectInto(MsgContollerTwo);
-
-      var input = document.querySelector('input');
-      var result = document.querySelector('#result');
-
-      // Add event listener to publish updates:
-      input.addEventListener('input', function(e) {
-        $.publish('input-value', this.value);
-      });
-
-      // Define mediator to subscribe to updates:
-      var Mediator = $.subscribe('input-value', function(e, value) {
-        result.innerHTML = value;
+        // Define mediator to subscribe to updates:
+        var Mediator = $.subscribe('input-value', function(e, value) {
+          result.html(value);
+        });
       });
     });
-
   </script>
+</head>
+<body>
+  <nav class="current">
+    <h1>Dependency Injection</h1>
+  </nav>
+  <article class="current" id="main">
+    <section>
+      <ul class="list" id='inputList'>
+        <li><label>Enter text: </label><input type="text"></li>
+      </ul>
+      <p id="result"></p>
+    </section>
+  </article>
 </body>
 </html>
