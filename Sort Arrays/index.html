@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="chui/chui-ios-3.7.0.min.css">
+  <script src='chui/jquery-2.1.1.min.js'></script>
+  <script src='chui/chui-3.7.0.min.js'></script>
+  <script>
+    $(function() {
+      var people = [
+        {"firstName": "John", "lastName": "Doe", "age": "21"},
+        {"firstName": "Tom", "lastName": "Zombie", "age": "27"},
+        {"firstName": "Suzzy", "lastName": "Cue", "age": "25"},
+        {"firstName": "Joe", "lastName": "Bodoni", "age": "35"},
+        {"firstName": "Mike", "lastName": "Miller", "age": "26"},
+        {"firstName": "Wobba", "lastName": "Phet", "age": "30"},
+        {"firstName": "Tom", "lastName": "Smith", "age": "27"},
+        {"firstName": "Tom", "lastName": "Sam", "age": "43"},
+        {"firstName": "Joe", "lastName": "Baker", "age": "45"},
+        {"firstName": "Joe", "lastName": "Baker", "age": "31"},
+        {"firstName": "Joe", "lastName": "Baker", "age": "30"},
+        {"firstName": "Bob", "lastName": "Baker", "age": "33"},
+        {"firstName": "Dan", "lastName": "Smith", "age": "31"},
+        {"firstName": "Ed", "lastName": "Bodoni", "age": "31"}
+      ];
+      var printArray = function (a) {
+        a.forEach(function(ctx) {
+          $('#people').append('<li>' + ctx.firstName + " " + ctx.lastName + ", age: " + ctx.age + "</li>");
+        });
+      };
+
+      (function() {
+
+        ///////////////////////////////
+        // Method to sort array objects
+        // by multiple properties:
+        ///////////////////////////////
+        var orderBy = function (attr) {
+          // Capture arguments:
+          var props = arguments;
+          // Define function to sort by properties:
+          //=======================================
+          return function (a, b) {
+            // Private function to sort a propery.
+            // This will return -1, 0, or 1,
+            // depending on how the properties
+            // compared in value:
+            //====================================
+            var sortByProperty = function (property) {
+              // Default sort order:
+              var sortOrder = 1;
+              // If user provided property 
+              // with "-" prefix, make
+              // sort order descending:
+              if(property[0] === "-") {
+                sortOrder = -1;
+                // Extract property from hyphen prefix:
+                property = property.substr(1);
+              }
+              // Sort objects by provided properties:
+              //=====================================
+              return function (a, b) {
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+              }
+            };
+
+            // Loop over all properties and sort
+            // objects based on those properties:
+            //===================================
+            var i = 0; 
+            var result = 0;
+            var numberOfProperties = props.length;
+            while(result === 0 && i < numberOfProperties) {
+              // Use the private function to compare two values:
+              //================================================
+              result = sortByProperty(props[i])(a, b);
+              i++;
+            }
+            return result;
+          };
+        };
+
+        ///////////////////////////////////////////
+        // Define "orderBy" method on Array object:
+        ///////////////////////////////////////////
+        Object.defineProperty(Array.prototype, "orderBy", {
+          // Do not expose this method when 
+          // looping over array properties:
+          enumerable: false,
+          // Do not allow overriding this
+          // method with operators:
+          writable: false,
+          // Return our custom sort method:
+          value: function() {
+            return this.sort(orderBy.apply(null, arguments));
+          }
+        });
+      })();
+
+      // Sort the array of people:
+      //==========================
+      people.orderBy("age", "lastName", "firstName");
+
+      // Pass the sorted array to the printArray function:
+      printArray(people);
+
+
+      //////////////
+      // Sort dates:
+      //////////////
+      function sortDate(a,b){  
+        return new Date(a) - new Date(b);  
+      };
+
+
+      ///////////////////////
+      // First Example
+      // Sort array of dates:
+      ///////////////////////
+
+      // Create dates:
+      var today = new Date();;
+      var date_1999 = new Date('October 30, 1999');
+      var date_1949 = new Date('August 20, 1949');
+      var date_1980 = new Date('January 1, 1980');
+      var dates = [date_1949, date_1999, today, date_1980];
+
+      // Sort array with sortDate:
+      dates.sort(sortDate);
+      // Output sorted dates:
+      dates.forEach(function(ctx) {
+        $('#moreDates').append('<li><h3>' + new Date(ctx).getFullYear() + '</h3></li>');
+      });
+
+
+
+      ////////////////////////////////////
+      // Second Example
+      // Sort array of objects with dates:
+      ////////////////////////////////////
+
+      var employees = [
+        {
+          name: "Phil", 
+          age: 32, 
+          retirementDate: "March 12, 2044"
+        },
+        {
+          name: "Janet", 
+          age: 18, 
+          retirementDate: "June 2, 2055"
+        },
+        {
+          name: "Tim", 
+          age: 58, 
+          retirementDate: "December 20, 2024"
+        },
+        {
+          name: "Mary", 
+          age: 62, 
+          retirementDate: "April 30, 2018"
+        }
+      ];
+
+      employees.sort(function(a, b) {
+        return sortDate(a.retirementDate, b.retirementDate)
+      });
+      employees.forEach(function(ctx) {
+        $('#date').append("<li><h3>" + ctx.name + ": " + ctx.retirementDate + "</h3></li>");
+      });
+
+
+      // Options for segmented control:
+      //===============================
+      var segmentedOptions = {
+        id: 'toggleArraySort',
+        labels : ['First Name','Last Name','Age'],
+        selected: 1
+      };
+
+      // Define callback for Segmented Control:
+      //=======================================
+      var segmentedResponse = function(e) {
+        e.stopPropagation();
+        $('#people').empty();
+
+        var choice = $(this).index();
+        switch (choice) {
+          case 0:
+            // Sort by first name:
+            people.orderBy("firstName", "age", "lastName");
+            printArray(people);
+            break;
+          case 1:
+            // Sort by last name:
+            people.orderBy("lastName", "firstName", "age");
+            printArray(people);
+            break;
+          case 2:
+            // Sort by age:
+            people.orderBy("age", "lastName", "firstName");
+            printArray(people);
+            break;
+        }
+      };
+
+      // Create segmented control:
+      var newSegmented = $.UICreateSegmented(segmentedOptions);
+      $('#segmentedContainer').append(newSegmented);
+
+      // Init Segmented Control:
+      $('#toggleArraySort').UISegmented({
+        selected: 0, 
+        callback: segmentedResponse
+      });
+    });
+  </script>
+</head>
+<body>
+<nav class='current'>
+    <h1>Sorting</h1>
+</nav>
+<article id="main" class="current">
+  <section>
+    <h2>Sort Array of Objects</h2>
+      <div id='segmentedContainer' class='horizontal centered'></div>
+    <ul id='people' class="list">
+    </ul>
+    <h2>Sort Array of Dates</h2>
+    <ul id="moreDates" class="list"></ul>
+    <h2>Sort Array of Objects with Dates</h2>
+    <ul id='date'class='list'></ul>
+
+  </section>
+</article>
+  
+</body>
+</html>
