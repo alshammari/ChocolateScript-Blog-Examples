@@ -102,25 +102,21 @@
       app.map('FirstMessage', FirstMsg);
       app.map('SecondMessage', SecondMsg);
       app.map('WobbaMessage', ThirdMsg);
+      console.log(app.dependencies);
 
       ////////////////////////////////////////
       // Run instance and inject dependencies:
       ////////////////////////////////////////
-      app.run(function() {
+      app.run(function(WobbaMessage, FirstMessage, SecondMessage) {
 
-        // Inject dependencies into function:
+        // Inject dependency into function:
         //===================================
         app.injectInto(MsgControllerOne);
-
-        // Inject dependencies into anonymous function:
-        //=============================================
-        app.injectInto(function(FirstMessage, SecondMessage, WobbaMessage) {
-          var list = $('<ul></ul>');
-          list.addClass('list');
-          $(list).append('<li>' + FirstMessage.announce() + SecondMessage.announce(' + second message.') + '</li>');
-          $(list).append('<li>' + WobbaMessage ('Wobba was here!!!') + '</li>');
-          $('#inputList').before(list);
-        });
+        var list = $('<ul></ul>');
+        list.addClass('list');
+        $(list).append('<li>' + FirstMessage.announce() + SecondMessage.announce(' + second message.') + '</li>');
+        $(list).append('<li>' + WobbaMessage ('Wobba was here!!!') + '</li>');
+        $('#inputList').before(list);
 
         var input = $('input');
         var result = $('#result');

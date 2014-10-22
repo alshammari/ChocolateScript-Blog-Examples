@@ -16,7 +16,6 @@
     var InputTextModel = function() {
       // Data is a simple string:
       var private_data = '';
-      var $this = this;
       $.subscribe('data-binding-input-value', function(event, data) {
         private_data = data;
       });

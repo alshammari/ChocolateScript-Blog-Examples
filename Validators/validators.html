@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Validators</title>
+</head>
+<body>
+  <h1>Validators</h1>
+  <h2>isNotEmpty</h2>
+  <p>If the input is not empty, this returns true, otherwise it returns false.</p>
+  <p>
+    <input placeholder='Enter text here' type="text" id='emptyTest' name='emptyTest'>
+  </p>
+  <p>
+    <label id='emptyTestLabel' for="emptyTest">&nbsp;</label>
+  </p>
+  <p><button id='emptyTestButton'>Verify if input is empty</button></p>
+ <hr>
+  <h2>Alphabetic</h2>
+  <p>This check to see that the input value is purely alphabetic, no numeric characters.</p>
+  <p>
+    <input placeholder='text only' type="text" id='alphabeticInput' name='alphabeticInput'>
+  </p>
+  <p>
+    <label id='alphabeticInputLabel' for="alphabeticInput">&nbsp;</label>
+  </p>
+  <p>
+    <button id='alphabeticButton'>Verify input is text only.</button>
+  </p>
+  <hr>
+  <h2>Numeric</h2>
+  <p>
+    <input placeholder='numbers only' type="text" id='numericInput'>
+  </p>
+  <p>
+    <label for="numericInput" id='numericInputLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='numericButton'>Verify is numeric value</button>
+  </p>
+  <hr>
+  <h2>Alpha-numeric</h2>
+  <p>
+    <input placeholder='enter data' type="text" id='alphanumeric' name='alphanumeric'>
+  </p>
+  <p>
+    <label for="alphanumeric" id='alphanumericLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='alphanumericButton'>Verify is alpha-numeric</button>
+  </p>
+  <hr>
+  <h2>Username</h2>
+  <h3>Must contain at least 6 characters</h3>
+  <h3>Must be alphabetic or alpha-numeric</h3>
+  <p>
+    <input placeholder='enter username' type="text" id='username' name='username'>
+  </p>
+  <p>
+    <label for="username" id='usernameLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='usernameButton'>Verify username</button>
+  </p>
+  <hr>
+  <h2>Matching Passwords</h2>
+  <h3>Passwords must match and contain mixed, alpha-numeric characters and have at least 6 characters</h3>
+  <p>
+    <input placeholder='first password' type="password" id='password1' name='password1'>
+    <br>
+    <input placeholder='repeat password' type="password" id='password2' name='password2'>
+  </p>
+  <p>
+    <label id='passwordLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='passwordButton'>Verify Passwords</button>
+  </p>
+  <hr>
+  <h2>Email Address</h2>
+  <p>
+    <input placeholder='enter email address' type="email" id='email' name='email'>
+  </p>
+  <p>
+    <label for="email" id='emailLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='emailButton'>Verify email address</button>
+  </p>
+  <hr>
+  <h2>Phone Number</h2>
+  <p>
+    <input  placeholder='enter phone number' type="phone" id='phone' name='phone'>
+  </p>
+  <p>
+    <label for="phone" id='phoneLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='phoneButton'>Verify phone number</button>
+  </p>
+  <hr>
+  <h2>URL</h2>
+  <h3>A valid url should being with http, https or ftp</h3>
+  <p>
+    <input placeholder='enter url' type="url" id='url' name='url'>
+  </p>
+  <p>
+    <label for="url" id='urlLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='urlButton'>Veritfy URL</button>
+  </p>
+  <hr>
+  <h2>Age</h2>
+  <h3>Includes a minimum age requirement (18)</h3>
+  <p>
+    <input type="text" id='age' name='age'>
+  </p>
+  <p>
+    <label for="age" id='ageLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='ageButton'>Verify age</button>
+  </p>
+  <hr>
+  <h2>Checkbox</h2>
+  <h3>Should be selected</h3>
+  <p>
+    <input type="checkbox" id='checkbox' name='checkbox'><label  for="checkbox">Agree to terms</label>
+  </p>
+  <p>
+    <label id='checkboxLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='checkboxButton'>Verify checkbox selection</button>
+  </p>
+  <hr>
+  <h2>Radio Buttons</h2>
+  <h3>One should be selected</h3>
+  <p>
+    <label><input type="radio" name='myRadioButtons' value='Apples'> Apples</label>
+  </p>
+  <p>
+    <label><input type="radio" name='myRadioButtons' value='Oranges'> Oranges</label>
+  </p>
+  <p>
+    <label><input type="radio" name='myRadioButtons' value='Bananas'> Bananas</label>
+  </p>
+  <p>
+    <label id='radioLabel'>&nbsp;</label>
+  </p>
+  <p>
+    <button id='radioButton'>Verify checkbox selection</button>
+  </p>
+  <hr>
+  <h2>Select Box</h2>
+  <h3>Make a selection</h3>
+  <p>
+    <select name="selectbox" id="selectbox">
+      <option value="">Select a fruit</option>
+      <option value='Apple'>Apple</option>
+      <option value='Orange'>Orange</option>
+      <option value='Banana'>Banana</option>
+    </select>
+  </p>
+  <p>
+    <label id='selectboxLabel' for="selectboxLabel">&nbsp;</label>
+  </p>
+  <p>
+    <button id='selectboxButton'>Validate select box</button>
+  </p>
+
+
+  <script>
+  (function(window) {
+
+    // Helper functions:
+    //==================
+    var $ = document;
+    var on = function(id, callback) {
+      return id.addEventListener('click', callback, false);
+    };
+
+    /////////////
+    // Validators
+    /////////////
+
+    var isNotEmpty = function(input) {
+      if (input && input.value) {
+        return true
+      } else {
+        return false;
+      }
+    };  
+
+    var validateAlphabetic = function(input) {
+      var letters = /^[A-Za-z]+$/;
+      var value = input.value;
+      return value.match(letters);
+    };
+
+    var validateNumber = function(input) {
+      var numbers = /^[0-9]+$/; 
+      var value = input.value;
+      return value.match(numbers);
+    };
+
+    var validateAlphaNumeric = function(input) {
+      var letters = /^[0-9a-zA-Z]+$/; 
+      var value = input.value;
+      return value.match(letters);
+    };    
+
+    var validateUserName = function(input, minimum) {
+      var username = input.value;
+      if (!isNaN(username)) {
+        return false;
+      } else {
+        return username.length >= minimum;
+      }
+    };
+
+    var validatePassword = function(input1, input2, minimum) {
+      if (input1.value.length < minimum || input2.value.length < minimum) return false;
+      var letters = /^(?=.*[a-zA-Z])(?=.*[0-9]).+$/;
+      if (!letters.test(input1.value) && !letters.test(input2.value)) return false;
+      return input1.value === input2.value;
+    };
+
+    var validateEmail = function(input) {
+      var value = input.value;
+      var email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      return value.match(email);
+    };
+
+    // North America (US and Canada):
+    var validatePhoneNumber = function(input) {
+      var phoneNumber = input.value.replace(/[\(\)\.\-\ ]/g, '');  
+      var phone = /^1?[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+      return phoneNumber.match(phone);
+    };
+    
+    var validateUrl = function(input) {
+      var url = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
+      return input.value.match(url);
+    };
+
+    var validateAge = function(input, minimum) {
+      var age = input.value;
+      return age >= minimum;
+    };
+
+    var validateCheckbox = function(input) {
+      return input.checked === true;
+    };
+
+    var validateRadioButtons = function(radioButtons) {
+      var choice = false;
+      radioButtons.forEach(function(button) {
+        if (button.checked === true) {
+          choice = true;
+        }
+      });
+      return choice;
+    };  
+
+    var validateSelectBox = function(selectbox) {
+      return selectbox.selectedIndex;
+    };      
+
+    // isNotEmpty test:
+    //=================
+    var emptyTestInput = $.querySelector('#emptyTest');
+    var emptyTestLabel = $.querySelector('#emptyTestLabel');
+    var emptyTestButton = $.querySelector('#emptyTestButton');
+    on(emptyTestButton, function() {
+      if (isNotEmpty(emptyTestInput)) {
+        emptyTestLabel.innerHTML = 'The input is not empty.';
+        emptyTestInput.style.backgroundColor = 'green';
+        emptyTestInput.style.color = 'white';
+      } else {
+        emptyTestLabel.innerHTML = 'The input is empty.';
+        emptyTestInput.style.backgroundColor = 'red';
+        emptyTestInput.style.color = 'white';
+      }
+    });
+
+    // alphabetic test:
+    //=======================
+    var alphabeticTestInput = $.querySelector('#alphabeticInput');
+    var alphabeticTestLabel = $.querySelector('#alphabeticInputLabel');
+    var alphabeticButton = $.querySelector('#alphabeticButton');
+    on(alphabeticButton, function() {
+      if (validateAlphabetic(alphabeticTestInput)) {
+        alphabeticTestLabel.innerHTML = 'The input is alphabetic.';
+        alphabeticTestInput.style.backgroundColor = 'green';
+        alphabeticTestInput.style.color = 'white';
+      } else {
+        alphabeticTestLabel.innerHTML = 'The input is not alphabetic.';
+        alphabeticTestInput.style.backgroundColor = 'red';
+        alphabeticTestInput.style.color = 'white';
+      }
+    });
+
+    // numeric test:
+    //=======================
+    var numericInput = $.querySelector('#numericInput');
+    var numericLabel = $.querySelector('#numericInputLabel');
+    var numericButton = $.querySelector('#numericButton');
+    on(numericButton, function() {
+      if (validateNumber(numericInput)) {
+        numericLabel.innerHTML = 'The input is numeric.';
+        numericInput.style.backgroundColor = 'green';
+        numericInput.style.color = 'white';
+      } else {
+        numericLabel.innerHTML = 'The input is not numeric.';
+        numericInput.style.backgroundColor = 'red';
+        numericInput.style.color = 'white';
+      } 
+    });
+
+    // alpha-numeric test:
+    //=======================
+    var alphanumericInput = $.querySelector('#alphanumeric');
+    var alphanumericLabel = $.querySelector('#alphanumericLabel');
+    var alphanumericButton = $.querySelector('#alphanumericButton');
+    on(alphanumericButton, function() {
+      if (validateAlphaNumeric(alphanumericInput)) {
+        alphanumericLabel.innerHTML = 'The input is alpha-numeric.';
+        alphanumericInput.style.backgroundColor = 'green';
+        alphanumericInput.style.color = 'white';
+      } else {
+        alphanumericLabel.innerHTML = 'The input is not alpha-numeric.';
+        alphanumericInput.style.backgroundColor = 'red';
+        alphanumericInput.style.color = 'white';
+      } 
+    });
+
+    // username test:
+    //=======================
+    var username = $.querySelector('#username');
+    var usernameLabel = $.querySelector('#usernameLabel');
+    var usernameButton = $.querySelector('#usernameButton');
+    on(usernameButton, function() {
+      if (validateUserName(username, 6)) {
+        usernameLabel.innerHTML = 'The username is valid.';
+        username.style.backgroundColor = 'green';
+        username.style.color = 'white';
+      } else {
+        usernameLabel.innerHTML = 'The username is not valid.';
+        username.style.backgroundColor = 'red';
+        username.style.color = 'white';
+      } 
+    });
+
+    // password test:
+    //=======================
+    var password1 = $.querySelector('#password1');
+    var password2 = $.querySelector('#password2');
+    var passwordLabel = $.querySelector('#passwordLabel');
+    var passwordButton = $.querySelector('#passwordButton');
+    on(passwordButton, function() {
+      if (validatePassword(password1, password2, 6)) {
+        passwordLabel.innerHTML = 'The passwords are valid.';
+        password1.style.backgroundColor = 'green';
+        password1.style.color = 'white';
+        password2.style.backgroundColor = 'green';
+        password2.style.color = 'white';
+      } else {
+        passwordLabel.innerHTML = 'The passwords are not valid.';
+        password1.style.backgroundColor = 'red';
+        password1.style.color = 'white';
+        password2.style.backgroundColor = 'red';
+        password2.style.color = 'white';
+      } 
+    });
+
+    // email test:
+    //=======================
+    var email = $.querySelector('#email');
+    var emailLabel = $.querySelector('#emailLabel');
+    var emailButton = $.querySelector('#emailButton');
+    on(emailButton, function() {
+      if (validateEmail(email)) {
+        emailLabel.innerHTML = 'The email is valid.';
+        email.style.backgroundColor = 'green';
+        email.style.color = 'white';
+      } else {
+        emailLabel.innerHTML = 'The email is not valid.';
+        email.style.backgroundColor = 'red';
+        email.style.color = 'white';
+      } 
+    });
+
+    // phone number test:
+    //=======================
+    var phone = $.querySelector('#phone');
+    var phoneLabel = $.querySelector('#phoneLabel');
+    var phoneButton = $.querySelector('#phoneButton');
+    on(phoneButton, function() {
+      if (validatePhoneNumber(phone)) {
+        phoneLabel.innerHTML = 'The phone number is valid.';
+        phone.style.backgroundColor = 'green';
+        phone.style.color = 'white';
+      } else {
+        phoneLabel.innerHTML = 'The phone number is not valid.';
+        phone.style.backgroundColor = 'red';
+        phone.style.color = 'white';
+      } 
+    });
+
+    // url test:
+    //=======================
+    var url = $.querySelector('#url');
+    var urlLabel = $.querySelector('#urlLabel');
+    var urlButton = $.querySelector('#urlButton');
+    on(urlButton, function() {
+      if (validateUrl(url)) {
+        urlLabel.innerHTML = 'The url is valid.';
+        url.style.backgroundColor = 'green';
+        url.style.color = 'white';
+      } else {
+        urlLabel.innerHTML = 'The url is not valid.';
+        url.style.backgroundColor = 'red';
+        url.style.color = 'white';
+      } 
+    });
+
+    // age test:
+    //=======================
+    var age = $.querySelector('#age');
+    var ageLabel = $.querySelector('#ageLabel');
+    var ageButton = $.querySelector('#ageButton');
+    on(ageButton, function() {
+      if (validateAge(age, 18)) {
+        ageLabel.innerHTML = 'The age is valid.';
+        age.style.backgroundColor = 'green';
+        age.style.color = 'white';
+      } else {
+        ageLabel.innerHTML = 'The age is not valid.';
+        age.style.backgroundColor = 'red';
+        age.style.color = 'white';
+      } 
+    });
+
+    // checkbox test:
+    //=======================
+    var checkbox = $.querySelector('#checkbox');
+    var checkboxLabel = $.querySelector('#checkboxLabel');
+    var checkboxButton = $.querySelector('#checkboxButton');
+    on(checkboxButton, function() {
+      if (validateCheckbox(checkbox)) {
+        checkboxLabel.innerHTML = 'The checkbox is valid.';
+        checkbox.style.backgroundColor = 'green';
+        checkbox.style.color = 'white';
+      } else {
+        checkboxLabel.innerHTML = 'The checkbox is not valid.';
+        checkbox.style.backgroundColor = 'red';
+        checkbox.style.color = 'white';
+      } 
+    });
+
+    // checkbox test:
+    //=======================
+    var radioButtons = [].slice.apply($.querySelectorAll('input[type=radio]'));
+    var radioLabel = $.querySelector('#radioLabel');
+    var radioButton = $.querySelector('#radioButton');
+    on(radioButton, function() {
+      if (validateRadioButtons(radioButtons)) {
+        radioLabel.innerHTML = 'A radio button is selected.';
+      } else {
+        radioLabel.innerHTML = 'Please select a radio button.';
+      } 
+    });
+
+    // select box test:
+    //=======================
+    var selectbox = $.querySelector('#selectbox');
+    var selectboxLabel = $.querySelector('#selectboxLabel');
+    var selectboxButton = $.querySelector('#selectboxButton');
+    on(selectboxButton, function() {
+      if (validateSelectBox(selectbox)) {
+        selectboxLabel.innerHTML = 'You have made a valid select.';
+        selectbox.style.backgroundColor = 'green';
+        selectbox.style.color = 'white';
+      } else {
+        selectboxLabel.innerHTML = 'Please make a selection.';
+        selectbox.style.backgroundColor = 'red';
+        selectbox.style.color = 'white';
+      } 
+    });
+
+
+
+  })(this);
+  </script>
+</body>
+</html>
